@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import TaskActions from "./TaskActions";
 
 const projectPage = () => {
     const { organization } = useOrganization();
@@ -94,6 +95,8 @@ const projectPage = () => {
         )
     }
 
+
+
     return (
         <div className="p-4">
             <p className="text-4xl">{organization?.name}</p>
@@ -131,6 +134,7 @@ const projectPage = () => {
                 </DialogContent>
             </Dialog>
 
+
             <Input placeholder="Search Tasks..." className="mt-3" />
             <br />
             <div className="w-full m-auto">
@@ -155,7 +159,7 @@ const projectPage = () => {
                             </TableRow>
                         ) : (
                             tasks.map((task: any) => (
-                                <TableRow key={task.id}>
+                                <TableRow key={task.id} className="hover:bg-transparent">
                                     <TableCell><Checkbox onClick={async () => {
                                         const newStatus = task.status === 'done' ? 'not-started' : 'done';
                                         const { error } = await supabase.from('tasks')
@@ -179,6 +183,18 @@ const projectPage = () => {
                                             <Badge variant={'success'} className="w-[100px]">Done</Badge>
                                         )}</TableCell>
                                     <TableCell>{task.description}</TableCell>
+                                    <TableCell>
+
+
+
+
+
+                                        <TaskActions task={task} onUpdate={fetchTasks} />
+
+
+
+
+                                    </TableCell>
                                 </TableRow>
                             ))
                         )}
