@@ -109,7 +109,7 @@ export default function TaskActions({ task, onUpdate }: TaskActionsProps) {
             <DialogTrigger asChild>
                 <Button size={'sm'} variant={'ghost'}>View Actions</Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="w-5xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Actions for: {task.name}</DialogTitle>
                 </DialogHeader>

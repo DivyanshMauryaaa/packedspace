@@ -9,7 +9,6 @@ import {
     Activity,
     GitBranch,
     Github,
-    Terminal,
     Layers,
     Code,
     Settings,
@@ -69,6 +68,16 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         }, null, 2)
     },
     {
+        id: 'aws_ec2_reboot_instances',
+        name: 'Reboot EC2 Instance',
+        description: 'Reboots one or more instances.',
+        platform: 'AWS',
+        icon: RefreshCw,
+        defaultData: JSON.stringify({
+            InstanceIds: ["i-1234567890abcdef0"]
+        }, null, 2)
+    },
+    {
         id: 'aws_s3_create_bucket',
         name: 'Create S3 Bucket',
         description: 'Creates a new S3 bucket.',
@@ -82,6 +91,19 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         }, null, 2)
     },
     {
+        id: 'aws_s3_put_object',
+        name: 'Upload to S3',
+        description: 'Uploads an object to a bucket.',
+        platform: 'AWS',
+        icon: Upload,
+        defaultData: JSON.stringify({
+            Bucket: "my-bucket",
+            Key: "folder/file.txt",
+            Body: "File content or binary",
+            ContentType: "text/plain"
+        }, null, 2)
+    },
+    {
         id: 'aws_lambda_invoke',
         name: 'Invoke Lambda Function',
         description: 'Invokes a Lambda function.',
@@ -90,6 +112,23 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         defaultData: JSON.stringify({
             FunctionName: "my-function",
             Payload: "{ \"key\": \"value\" }"
+        }, null, 2)
+    },
+    {
+        id: 'aws_lambda_update_config',
+        name: 'Update Lambda Config',
+        description: 'Updates Lambda configuration, including env vars.',
+        platform: 'AWS',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            FunctionName: "my-function",
+            Environment: {
+                Variables: {
+                    "ENV_VAR_KEY": "new_value"
+                }
+            },
+            MemorySize: 128,
+            Timeout: 3
         }, null, 2)
     },
     {
@@ -105,6 +144,33 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
             MasterUsername: "admin",
             MasterUserPassword: "password",
             AllocatedStorage: 20
+        }, null, 2)
+    },
+    {
+        id: 'aws_rds_stop_db_instance',
+        name: 'Stop RDS Instance',
+        description: 'Stops a DB instance temporarily.',
+        platform: 'AWS',
+        icon: StopCircle,
+        defaultData: JSON.stringify({
+            DBInstanceIdentifier: "mydbinstance"
+        }, null, 2)
+    },
+    {
+        id: 'aws_cloudfront_create_invalidation',
+        name: 'Invalidate CloudFront Cache',
+        description: 'Invalidates files in a CloudFront distribution.',
+        platform: 'AWS',
+        icon: RefreshCw,
+        defaultData: JSON.stringify({
+            DistributionId: "E1234567890",
+            InvalidationBatch: {
+                CallerReference: "ref-" + Date.now(),
+                Paths: {
+                    Quantity: 1,
+                    Items: ["/*"]
+                }
+            }
         }, null, 2)
     },
 
@@ -170,6 +236,27 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
             }
         }, null, 2)
     },
+    {
+        id: 'gcp_cloud_run_services_update_env',
+        name: 'Update Cloud Run Env Vars',
+        description: 'Updates environment variables for a Cloud Run service.',
+        platform: 'Google Cloud',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            name: "projects/my-project/locations/us-central1/services/my-service",
+            service: {
+                spec: {
+                    template: {
+                        spec: {
+                            containers: [{
+                                env: [{ name: "ENV_VAR", value: "new_value" }]
+                            }]
+                        }
+                    }
+                }
+            }
+        }, null, 2)
+    },
 
     // --- DigitalOcean ---
     {
@@ -193,6 +280,28 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         icon: Trash,
         defaultData: JSON.stringify({
             droplet_id: 12345678
+        }, null, 2)
+    },
+    {
+        id: 'do_droplets_resize',
+        name: 'Resize Droplet',
+        description: 'Resizes a Droplet to a new size.',
+        platform: 'DigitalOcean',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            type: "resize",
+            size: "s-2vcpu-4gb",
+            disk: true
+        }, null, 2)
+    },
+    {
+        id: 'do_droplets_reboot',
+        name: 'Reboot Droplet',
+        description: 'Reboots a Droplet.',
+        platform: 'DigitalOcean',
+        icon: RefreshCw,
+        defaultData: JSON.stringify({
+            type: "reboot"
         }, null, 2)
     },
     {
@@ -235,6 +344,28 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         }, null, 2)
     },
     {
+        id: 'supabase_secrets_create',
+        name: 'Set Project Secrets',
+        description: 'Sets or updates environment variables (secrets) for the project.',
+        platform: 'Supabase',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            secrets: [
+                { name: "MY_API_KEY", value: "secret_value_123" }
+            ]
+        }, null, 2)
+    },
+    {
+        id: 'supabase_database_restart',
+        name: 'Restart Database',
+        description: 'Restarts the database instance.',
+        platform: 'Supabase',
+        icon: RefreshCw,
+        defaultData: JSON.stringify({
+            project_ref: "your-project-ref"
+        }, null, 2)
+    },
+    {
         id: 'supabase_storage_create_bucket',
         name: 'Create Storage Bucket',
         description: 'Creates a new storage bucket.',
@@ -272,6 +403,30 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
             framework: "nextjs"
         }, null, 2)
     },
+    {
+        id: 'vercel_env_update',
+        name: 'Update Environment Variable',
+        description: 'Updates or creates an environment variable for a project.',
+        platform: 'Vercel',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            key: "API_SECRET_KEY",
+            value: "new_secret_value",
+            type: "encrypted",
+            target: ["production", "preview", "development"]
+        }, null, 2)
+    },
+    {
+        id: 'vercel_domains_add',
+        name: 'Add Domain',
+        description: 'Adds a custom domain to a project.',
+        platform: 'Vercel',
+        icon: Globe,
+        defaultData: JSON.stringify({
+            name: "example.com",
+            gitBranch: "main"
+        }, null, 2)
+    },
 
     // --- Fly.io ---
     {
@@ -303,6 +458,18 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
             }
         }, null, 2)
     },
+    {
+        id: 'fly_secrets_set',
+        name: 'Set Secrets',
+        description: 'Sets secrets (environment variables) for an app.',
+        platform: 'Fly.io',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            secrets: {
+                "DATABASE_URL": "postgres://user:pass@host:5432/db"
+            }
+        }, null, 2)
+    },
 
     // --- Railway ---
     {
@@ -325,6 +492,20 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         defaultData: JSON.stringify({
             projectId: "project-id",
             name: "web-server"
+        }, null, 2)
+    },
+    {
+        id: 'railway_variable_upsert',
+        name: 'Upsert Variable',
+        description: 'Creates or updates an environment variable.',
+        platform: 'Railway',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            projectId: "project-id",
+            environmentId: "env-id",
+            serviceId: "service-id",
+            name: "API_KEY",
+            value: "secret_value"
         }, null, 2)
     },
 
@@ -386,6 +567,19 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
             }
         }, null, 2)
     },
+    {
+        id: 'azure_app_settings_update',
+        name: 'Update App Settings',
+        description: 'Updates application settings (env vars) for an App Service.',
+        platform: 'Azure',
+        icon: Settings,
+        defaultData: JSON.stringify({
+            properties: {
+                "WEBSITE_NODE_DEFAULT_VERSION": "14.17.0",
+                "NEW_SETTING": "some-value"
+            }
+        }, null, 2)
+    },
 
     // --- GitHub ---
     {
@@ -429,6 +623,36 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         }, null, 2)
     },
     {
+        id: 'github_pr_merge',
+        name: 'Merge Pull Request',
+        description: 'Merges a pull request.',
+        platform: 'GitHub',
+        icon: GitBranch,
+        defaultData: JSON.stringify({
+            owner: "octocat",
+            repo: "Hello-World",
+            pull_number: 1,
+            commit_title: "Merge pull request #1",
+            merge_method: "squash" // merge, squash, or rebase
+        }, null, 2)
+    },
+    {
+        id: 'github_release_create',
+        name: 'Create Release',
+        description: 'Creates a new release.',
+        platform: 'GitHub',
+        icon: Upload,
+        defaultData: JSON.stringify({
+            owner: "octocat",
+            repo: "Hello-World",
+            tag_name: "v1.0.0",
+            name: "v1.0.0",
+            body: "Description of the release",
+            draft: false,
+            prerelease: false
+        }, null, 2)
+    },
+    {
         id: 'github_action_dispatch',
         name: 'Dispatch Workflow',
         description: 'Manually triggers a GitHub Actions workflow run.',
@@ -468,6 +692,16 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         }, null, 2)
     },
     {
+        id: 'docker_container_restart',
+        name: 'Restart Container',
+        description: 'Restarts a container.',
+        platform: 'Docker',
+        icon: RefreshCw,
+        defaultData: JSON.stringify({
+            id: "container_id_here"
+        }, null, 2)
+    },
+    {
         id: 'docker_image_pull',
         name: 'Pull Image',
         description: 'Pulls an image from a registry.',
@@ -476,6 +710,18 @@ export const PLATFORM_ACTIONS: PlatformAction[] = [
         defaultData: JSON.stringify({
             fromImage: "alpine",
             tag: "latest"
+        }, null, 2)
+    },
+    {
+        id: 'docker_network_create',
+        name: 'Create Network',
+        description: 'Creates a new Docker network.',
+        platform: 'Docker',
+        icon: Globe,
+        defaultData: JSON.stringify({
+            Name: "my-network",
+            CheckDuplicate: true,
+            Driver: "bridge"
         }, null, 2)
     }
 ];
